@@ -1,0 +1,12 @@
+_ConfigureOscillator: CODE, 906 0 11
+_main: CODE, 789 0 48
+_debounceUpdate: CODE, 360 0 212
+_onDelaySetT: CODE, 882 0 13
+_onDelayInit: CODE, 837 0 26
+__initialization: CODE, 895 0 9
+_onDelayUpdate: CODE, 572 0 123
+_isr: CODE, 4 0 23
+_taskFan: CODE, 28 0 332
+_ModIO2Init: CODE, 863 0 19
+_timerExpired: CODE, 695 0 94
+Total: 910
