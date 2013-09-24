@@ -109,6 +109,28 @@ extern void onDelaySetT(OnDelay* me, unsigned long T);
 extern bool onDelayUpdate(OnDelay* me, bool Trg);
 #define	onDelayOutput(me)	((me)->state & 1)
 
+
+/*
+ * TimedOff -
+ *
+ *
+ *				 +--------+
+ *				 | +----+ |
+ *				 | |    | |
+ *			Trg -|-+    +-|
+ *			R   -| +--+   |- Q
+ *			     | |  |   |
+ *			Par -|-+  +---|
+ *				 |        |
+ *			     +--------+
+ *
+ * INPUT:
+ *		Trg -
+ * PARAMETER:
+ *		T -
+ * OUTPUT:
+ *		Q -
+ */
 #define TimedOff		OnDelay
 #define	timedOffInit	onDelayInit
 #define	timedOffSetT	onDelaySetT
@@ -153,6 +175,58 @@ extern void offDelayInit(OffDelay* me, unsigned long T);
 extern void offDelaySetT(OffDelay* me, unsigned long T);
 extern bool offDelayUpdate(OffDelay* me, bool Trg, bool R);
 #define	offDelayOutput(me)	((me)->state & 1)
+
+
+/*
+ * OnOffDelay - The on-/off-delay function sets the output after the set ondelay time has expired, 
+ * and resets it upon expiration of the off-delay time.
+ *
+ * The time TH is triggered with a 0 to 1 transition at input Trg.
+ * If the status at input Trg is 1 at least for the duration of the
+ * time TH, the output is set to 1 on expiration of the time TH
+ * (the output follows the input with on-delay).
+ * The time is reset when the signal at input Trg is reset to 0
+ * before the time TH has expired..
+ * A 1 to 0 transition at input Trg triggers the time TL.
+ * If the status at input Trg is 0 at least for the duration of the
+ * signal TL, the output is set to 0 on expiration of the time TL
+ * (the output follows the input with off-delay).
+ * The time is reset when the signal at input Trg changes to 1
+ * again before the time TL has expired.
+ * 
+ *				 +--------+
+ *				 | +---+  |
+ *				 | | : |  |
+ *			Trg -|-' : '--|
+ *				 |   +--+ |- Q
+ *			     |   |  | |
+ *			Par -|---+  +-|
+ *				 |        |
+ *			     +--------+
+ *
+ * INPUT:
+ *		Trg - A positive edge (0 to 1 transition) at input Trg (Trigger) triggers the on-delay time TH.
+ *			  A negative edge (1 to 0 transition) at input Trg (Trigger) triggers the off-delay time TL.
+ * PARAMETER:
+ *		TH - TH is the time after which the output is set hi (output signal transition 0 to 1). 
+ *		TL - TL is the time after which the output is reset (output signal transition 1 to 0).
+ * OUTPUT:
+ *		Q - Q is set when the configured time TH has expired and Trg is still set. It is reset
+ *			on expiration of the time TL, if the trigger Trg has not been set again.
+ */
+typedef struct OnOffDelay OnOffDelay;
+struct OnOffDelay {
+	unsigned long TH;
+	unsigned long TL;
+	Timer timer[1];
+	unsigned char state;
+};
+
+extern void onOffDelayInit(OnOffDelay* me, unsigned long TH, unsigned long TL);
+extern void onOffDelaySetTH(OnOffDelay* me, unsigned long TH);
+extern void onOffDelaySetTL(OnOffDelay* me, unsigned long TL);
+extern bool onOffDelayUpdate(OnOffDelay* me, bool Trg);
+#define	onOffDelayOutput(me)	((me)->state & 1)
 
 
 typedef struct SetReset SetReset;

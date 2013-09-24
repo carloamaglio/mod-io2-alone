@@ -12,6 +12,9 @@
       <itemPath>thermostat.h</itemPath>
       <itemPath>scalelights.h</itemPath>
       <itemPath>plc.h</itemPath>
+      <itemPath>lc-switch.h</itemPath>
+      <itemPath>lc.h</itemPath>
+      <itemPath>pt.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"

@@ -120,9 +120,10 @@ void main(void) {
 		sysCanReset = 1;
 
 		taskForTest();
+
 		taskFan();
-		taskThermostat();
 		taskBathroomLights();
+		taskThermostat();
 		taskScaleLights();
 
 		if (sysCanReset) {

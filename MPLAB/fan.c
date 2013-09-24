@@ -31,9 +31,9 @@
 
 #if FAN
 
-#define FANOFFTIME		(40*MINUTES)		// turn off fan automatically after the time defined here
 #define LIGHTOFFTIME	(40*MINUTES)		// turn off shower light automatically after the time defined here
-#define DLIGHT			(15*MINUTES)		// here define the delay between light switch on and fan on
+#define FANONDELAY		(15*MINUTES)		// here define the delay between light switch on and fan on
+#define FANOFFTIME		(30*MINUTES)		// turn off fan automatically after the time defined here
 
 // switch fan input
 #define SwFPin						pinGPIO0
@@ -63,14 +63,51 @@ static Debounce swlDebouncer[1];
 
 static unsigned char state = 0;
 
+//#include "pt.h"
+//
+//static struct pt pt1;
+//static bool l;
+//static bool f;
+//static Timer timer[1];
+//
+//static int protothread1(struct pt *pt)
+//{
+//	/* A protothread function must begin with PT_BEGIN() which takes a pointer to a struct pt. */
+//	PT_BEGIN(pt);
+//
+//	/* We loop forever here. */
+//	while (1) {
+//		l = 0;
+//
+//		PT_WAIT_UNTIL(pt, SwL);
+//		l = 1;
+//		timerStart(timer, 1000);
+//
+//		PT_WAIT_UNTIL(pt, SwL==0 || timerExpired(timer));
+//		if (SwL) {
+//			f = 1;
+//			timerStart(timer, 1000);
+//			PT_WAIT_UNTIL(pt, SwL==0 || timerExpired(timer));
+//			l = 0;
+//			if (SwL) {
+//				PT_WAIT_UNTIL(pt, timerExpired(timer));
+//			}
+//		}
+//	}
+//
+//	/* All protothread functions must end with PT_END() which takes a pointer to a struct pt. */
+//	PT_END(pt);
+//}
+//
+
 /**
  * 
  */
 void taskFan() {
-	static TimedOff fantimer[1];			// started when fan switch toggle ON
 	static TimedOff lighttimer[1];			// started when light switch toggle ON
-	static TimedOff lightofftimer[1];		// started when light switch toggle OFF
-	static OnDelay dlight[1];				// 
+	static OnOffDelay fanLightDelay[1];		//
+
+	static TimedOff fantimer[1];			// started when fan switch toggle ON
 
 	if (state==0) {				// hardware initializing...
 		_HWINIT_DIGITAL_INPUT(SwFPin);
@@ -82,11 +119,15 @@ void taskFan() {
 		offFan();
 		_HWINIT_DIGITAL_OUTPUT(pinFan);
 
-		timedOffInit(fantimer, FANOFFTIME);
 		timedOffInit(lighttimer, LIGHTOFFTIME);
-		timedOffInit(lightofftimer, FANOFFTIME);
-		onDelayInit(dlight, DLIGHT);
+		onOffDelayInit(fanLightDelay, FANONDELAY, FANOFFTIME);
+
+		timedOffInit(fantimer, FANOFFTIME);
+
 		state = PWRONSTATE;
+
+//		PT_INIT(&pt1);
+//		timerInit(timer);
 	} else if (state >= PWRONSTATE) {					// power-on sequence (test the lights)
 		switch (state) {
 			case PWRONSTATE:							// 1. turn on the light
@@ -116,20 +157,20 @@ void taskFan() {
 				break;
 		}
 	} else {
-		debounceUpdate(swfDebouncer, SwF);			// read fan switch with debounce
-		debounceUpdate(swlDebouncer, SwL);			// read light switch with debounce
+		debounceUpdate(swfDebouncer, SwF);	// read fan switch
+		debounceUpdate(swlDebouncer, SwL);	// read light switch		__|----------------------------|____________
 
-		bool ql = timedOffUpdate(lighttimer, swl);
-		setLight(ql);
+		bool lightQ = timedOffUpdate(lighttimer, swl);	//				__|---------------------|___________________
+		setLight(lightQ);
 
-		bool qdlight = onDelayUpdate(dlight, ql);
+		bool fanLightQ = onOffDelayUpdate(fanLightDelay, lightQ);	//	_________|-------------------------|________
 
-		bool qoffl = timedOffUpdate(lightofftimer, swl);
+		bool fanQ = timedOffUpdate(fantimer, swf);					//	____________________________________________
 
-		bool qf;
-		qf = timedOffUpdate(fantimer, swf);
+		// fan run if fan switch is pressed or light is on or shower just finished
+		setFan(fanQ || fanLightQ);									//	_________|-------------------------|________
 
-		setFan(qf || qdlight || qoffl);					// fan run if fan switch is pressed or light is on or shower just finished
+//		protothread1(&pt1);
 	}
 }
 

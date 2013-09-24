@@ -25,12 +25,11 @@
 
 
 
-/**
+/*****************************************************************************
  *
  * Debounce -
  *
  */
-
 #define	DEBOUNCE_TIME	50
 
 #define	S0		STATE(0, 0)
@@ -84,13 +83,18 @@ bool debounceUpdate(Debounce* me, bool i) {
 	}
 	return debounceOutput(me);
 }
-
 #undef	S0
 #undef	S1
 #undef	S2
 #undef	S3
 #undef	S4
 
+
+/*****************************************************************************
+ *
+ * SwitchCounter -
+ *
+ * */
 
 /**
  *
@@ -191,12 +195,21 @@ ZERO:
 
 
 
-/**
+/*****************************************************************************
  *
  * OnDelay -
  *
- */
-
+ *				 +--------+
+ *				 | +----+ |
+ *				 | |    | |
+ *			Trg -|-'    '-|
+ *				 | :  +-+ |- Q
+ *			     | :  | | |
+ *			Par -|-+--+ +-|
+ *				 |        |
+ *			     +--------+
+ *
+ * */
 #define	S0		STATE(0, 0)
 #define	S1		STATE(1, 0)
 #define	S2		STATE(2, 1)
@@ -236,18 +249,16 @@ bool onDelayUpdate(OnDelay* me, bool Trg) {
 	}
 	return onDelayOutput(me);
 }
-
 #undef	S0
 #undef	S1
 #undef	S2
 
 
-/**
+/*****************************************************************************
  *
  * OffDelay - 
  *
- */
-
+ * */
 #define	S0				STATE(0, 0)
 #define	S1				STATE(1, 1)
 #define	S2				STATE(2, 1)
@@ -291,18 +302,82 @@ bool offDelayUpdate(OffDelay* me, bool Trg, bool R) {
 	}
 	return offDelayOutput(me);
 }
-
 #undef	S0
 #undef	S1
 #undef	S2
 
 
-/**
+/*****************************************************************************
+ *
+ * OnOffDelay -
+ *
+ * */
+#define	S0		STATE(0, 0)
+#define	S1		STATE(1, 0)
+#define	S2		STATE(2, 1)
+#define	S3		STATE(3, 1)
+
+void onOffDelayInit(OnOffDelay* me, unsigned long TH, unsigned long TL) {
+	onOffDelaySetTH(me, TH);
+	onOffDelaySetTL(me, TL);
+	me->state = S0;
+	timerInit(me->timer);
+}
+
+void onOffDelaySetTH(OnOffDelay* me, unsigned long TH) {
+	me->TH = TH / TIMESCALE;
+}
+
+void onOffDelaySetTL(OnOffDelay* me, unsigned long TL) {
+	me->TL = TL / TIMESCALE;
+}
+
+bool onOffDelayUpdate(OnOffDelay* me, bool Trg) {
+	switch (me->state) {
+		case S0:
+			if (Trg) {
+				me->state = S1;
+				timerStart(me->timer, me->TH);
+			}
+			break;
+		case S1:
+			if (Trg) {
+				if (timerExpired(me->timer)) {
+					me->state = S2;
+				}
+			} else {
+				me->state = S0;
+			}
+			break;
+		case S2:
+			if (!Trg) {
+				me->state = S3;
+				timerStart(me->timer, me->TL);
+			}
+			break;
+		case S3:
+			if (!Trg) {
+				if (timerExpired(me->timer)) {
+					me->state = S0;
+				}
+			} else {
+				me->state = S0;
+			}
+			break;
+	}
+	return onOffDelayOutput(me);
+}
+#undef	S0
+#undef	S1
+#undef	S2
+#undef	S3
+
+
+/*****************************************************************************
  *
  * SetReset -
  *
- */
-
+ * */
 #define	S0				STATE(0, 0)
 #define	S1				STATE(1, 1)
 
@@ -318,6 +393,5 @@ bool setResetUpdate(SetReset* me, bool S, bool R) {
 	}
 	return setResetOutput(me);
 }
-
 #undef	S0
 #undef	S1

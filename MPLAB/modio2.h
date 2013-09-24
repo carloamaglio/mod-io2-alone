@@ -26,7 +26,6 @@
 extern "C" {
 #endif
 
-// ingresso interruttore
 #define pinJUMPER(f)		f(A, 5)
 #define	JUMPER				(_PORT(pinJUMPER))
 

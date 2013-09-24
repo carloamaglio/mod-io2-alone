@@ -29,7 +29,7 @@
 
 #if BATHROOMLIGHTS
 
-#define OFFTIME (15*MINUTES)	// if someone forgot the light on, it turn off automatically after the time defined here
+#define OFFTIME (30*MINUTES)	// if someone forgot the light on, it turn off automatically after the time defined here
 
 // switch input
 #define SwPin						pinGPIO0
