@@ -147,7 +147,7 @@ unsigned char switchCounterCount(SwitchCounter* me, bool i) {
 						me->state++;
 					}
 				} else {									// if input goes low
-					timerStart(me->timer, 1000);				// for 1 s
+					timerStart(me->timer, 500);				// for 1 s
 					me->state--;
 				}
 				break;

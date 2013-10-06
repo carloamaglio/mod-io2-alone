@@ -125,6 +125,7 @@ void taskFan() {
 		timedOffInit(fantimer, FANOFFTIME);
 
 		state = PWRONSTATE;
+		state = 1;
 
 //		PT_INIT(&pt1);
 //		timerInit(timer);

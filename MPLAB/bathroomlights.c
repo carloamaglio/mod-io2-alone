@@ -50,7 +50,6 @@ static Debounce swDebouncer[1];
 #define	onLight2()					(setLight2(1))
 
 #define	PWRONSTATE		100
-#define	INITIALSTATE	1
 
 // different version in order to compare different usage of memory (RAM and Flash) by the compiler
 //		RAM, FLASH
@@ -107,6 +106,7 @@ void taskBathroomLights(void) {
 //		onDelayInit(ondelay, 1000);
 #endif
 		state = PWRONSTATE;
+		state = 1;
 	} else if (state >= PWRONSTATE) {					// power-on sequence (test the lights)
 		switch (state) {
 			case PWRONSTATE:							// 1. turn on the first light
@@ -131,7 +131,7 @@ void taskBathroomLights(void) {
 			case PWRONSTATE+3:							// 4. after 1s turn off the second light
 				if (timerExpired(timer)) {
 					offLight2();
-					state = INITIALSTATE;
+					state = 1;
 				}
 				break;
 		}
