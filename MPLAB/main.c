@@ -17,6 +17,8 @@
  * Author: Carlo
  *
  * Created on 26 ottobre 2012, 11.37
+ *
+ * 151020 CA modified the Timer structure so that it is no longer necessary to reset systime
  */
 
 #include "system.h"        /* System funct/params, like osc/peripheral config */
@@ -118,6 +120,7 @@ static double temp(double r) {
 }
 #endif
 
+#if 0
 #define	A5	1.588560974e-14
 #define	A4	1.077078151e-10
 #define	A3	2.969300166e-7
@@ -134,15 +137,16 @@ static double temp(double r) {
 #define	B4	((long)(A4*1e10*K))
 
 static long temp(long r) {
-	return B5*r-A4;
+	return (long)B5*r-A4;
 }
+#endif
 
 void main(void) {
 
 	ConfigureOscillator();
 	ModIO2Init();
 
-#if 1
+#if 0
 	temp(10);
 	temp(11);
 #endif
@@ -153,7 +157,6 @@ void main(void) {
 #endif
 
 	while (1) {
-		sysCanReset = 1;
 
 		taskForTest();
 
@@ -162,14 +165,9 @@ void main(void) {
 		taskThermostat();
 		taskScaleLights();
 
-		if (sysCanReset) {
-			systime = 0;
-			systick = 0;
-		} else {
-			di();
-			systimeInc(systime, systick);
-			systick = 0;
-			ei();
-		}
+		di();
+		systimeInc(systime, systick);
+		systick = 0;
+		ei();
 	}
 }

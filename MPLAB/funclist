@@ -1,16 +1,16 @@
-_switchCounterCount: CODE, 30 0 334
-__stringtab: STRING, 987 0 1
-___awmod: CODE, 798 0 71
-_states_mode0: STRING, 988 0 3
-_states_mode1: STRING, 991 0 3
-_ConfigureOscillator: CODE, 976 0 11
-_main: CODE, 869 0 51
-_debounceUpdate: CODE, 573 0 143
-__initialization: CODE, 22 0 6
+_ConfigureOscillator: CODE, 913 0 11
+_main: CODE, 834 0 21
+_onOffDelayUpdate: CODE, 312 0 129
+_debounceUpdate: CODE, 441 0 128
+_onDelaySetT: CODE, 900 0 13
+_onDelayInit: CODE, 810 0 24
+__initialization: CODE, 22 0 13
+_onOffDelayInit: CODE, 776 0 34
+_onDelayUpdate: CODE, 569 0 105
 _isr: CODE, 4 0 17
-_switchCounterInit: CODE, 920 0 38
-_temp: CODE, 1000 0 1
-_ModIO2Init: CODE, 958 0 18
-_taskBathroomLights: CODE, 364 0 209
-_timerExpired: CODE, 716 0 82
-Total: 988
+_taskFan: CODE, 37 0 275
+_onOffDelaySetTH: CODE, 887 0 13
+_onOffDelaySetTL: CODE, 873 0 14
+_ModIO2Init: CODE, 855 0 18
+_timerExpired: CODE, 674 0 102
+Total: 917

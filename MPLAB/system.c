@@ -19,7 +19,6 @@
 
 volatile unsigned char systick = 0;
 Systime systime = 0;
-char sysCanReset = 0;
 
 
 /* Refer to the device datasheet for information about available
@@ -63,8 +62,8 @@ void TMR_MultipleShot(Timer* me) {
 #endif
 
 void timerStart(Timer* me, unsigned long time) {
-	me->time = time;
-	systimeAdd(systime, me->timeout, time);
+	me->interval = time;
+	me->previous = systime;
 	me->running = 1;
 }
 
@@ -77,19 +76,17 @@ bool timerExpired(Timer* me) {
 	bool rv;
 	rv = me->running;
 	if (rv) {
-		if (rv = (systimeSysCompare(me->timeout)<=0)) {
+		Systime current = systime;
+		if (rv = ((Systime)(current - me->previous) >= me->interval)) {
 #if MULTISHOT
 			if (me->multishot) {
-				systimeInc(me->timeout, me->time);
+				me->previous = current;
 			} else {
 				Reset(me);
 			}
 #else
 			Reset(me);
 #endif
-		}
-		if (me->running) {
-			sysCanReset = 0;
 		}
 	}
 	return rv;

@@ -75,11 +75,10 @@
 #define	Systime	unsigned long
 extern volatile unsigned char systick;
 extern Systime systime;
-extern char sysCanReset;
-#define	systimeCompare(_ta, _tb)		((_ta)>(_tb) ? 1 : -1)
-#define	systimeSysCompare(_t)			systimeCompare(_t, systime)
+//#define	systimeCompare(_ta, _tb)		((_ta)>(_tb) ? 1 : -1)
+//#define	systimeSysCompare(_t)			systimeCompare(_t, systime)
 #define	systimeInc(_t, _time)			(_t += (_time))
-#define	systimeAdd(_src, _dst, _time)	(_dst = (_src) + (_time))
+//#define	systimeAdd(_src, _dst, _time)	(_dst = (_src) + (_time))
 
 /* Definition of some useful constants */
 #define	SECONDS	1000L
@@ -99,9 +98,9 @@ extern void ConfigureOscillator(void); /* Handles clock switching/osc initializa
  */
 typedef struct Timer Timer;
 struct Timer {
-	Systime timeout;
+	Systime previous;
+	Systime interval;
 #if MULTISHOT
-	unsigned long time;
 	unsigned int multishot : 1;
 #endif
 	unsigned int running : 1;
@@ -109,14 +108,14 @@ struct Timer {
 
 #if 1
 #if MULTISHOT
-#define	timerInit(_me)				((_me)->time=0, (_me)->running=0, (_me)->multishot=0)
+#define	timerInit(_me)				((_me)->interval=0, (_me)->running=0, (_me)->multishot=0)
 #define	timerSingleShot(_me)		((_me)->multishot=0)
 //#define	TMR_MultipleShot(_me)		((_me)->multishot=1)
-#define	timerStart(_me, _t)			((_me)->time=(_t), systimeAdd(systime, (_me)->timeout, (_t)), (_me)->running=1, sysCanReset=0)
+#define	timerStart(_me, _t)			((_me)->interval=(Systime)(_t), (_me)->previous=systime, (_me)->running=1)
 #else
 #define	timerInit(_me)				((_me)->running=0)
 #define	timerSingleShot(_me)
-#define	timerStart(_me, _t)			(systimeAdd(systime, (_me)->timeout, (_t)), (_me)->running=1, sysCanReset=0)
+#define	timerStart(_me, _t)			((_me)->interval=(Systime)(_t), (_me)->previous=systime, (_me)->running=1)
 #endif
 #define	timerReset(_me)				((_me)->running=0)
 #else

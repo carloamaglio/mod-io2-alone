@@ -28,8 +28,8 @@ extern "C" {
 
 #include "modio2.h"
 
-#define	FAN					0
-#define	BATHROOMLIGHTS		1
+#define	FAN					1
+#define	BATHROOMLIGHTS		0
 #define	THERMOSTAT			0
 #define	SCALELIGHTS			0
 
