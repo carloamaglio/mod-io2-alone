@@ -19,7 +19,7 @@
  *		Sw - Switch. One switch to control two lights
  *	Outputs:
  *		R1 - Light 1 rele (for example washbasin)
- *      R2 - Light 2 rele (for example mirror)
+ *		R2 - Light 2 rele (for example mirror)
  */
 
 #include "system.h"

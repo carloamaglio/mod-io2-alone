@@ -1,15 +1,16 @@
-_switchCounterCount: CODE, 28 0 376
-__stringtab: STRING, 1183 0 1
-___awmod: CODE, 963 0 94
-_states_mode0: STRING, 1184 0 3
-_states_mode1: STRING, 1187 0 3
-_ConfigureOscillator: CODE, 1162 0 11
-_main: CODE, 1057 0 48
-_debounceUpdate: CODE, 654 0 215
-__initialization: CODE, 1173 0 8
-_isr: CODE, 4 0 23
-_switchCounterInit: CODE, 1105 0 38
-_ModIO2Init: CODE, 1143 0 19
-_taskBathroomLights: CODE, 404 0 250
-_timerExpired: CODE, 869 0 94
-Total: 1183
+_switchCounterCount: CODE, 30 0 334
+__stringtab: STRING, 987 0 1
+___awmod: CODE, 798 0 71
+_states_mode0: STRING, 988 0 3
+_states_mode1: STRING, 991 0 3
+_ConfigureOscillator: CODE, 976 0 11
+_main: CODE, 869 0 51
+_debounceUpdate: CODE, 573 0 143
+__initialization: CODE, 22 0 6
+_isr: CODE, 4 0 17
+_switchCounterInit: CODE, 920 0 38
+_temp: CODE, 1000 0 1
+_ModIO2Init: CODE, 958 0 18
+_taskBathroomLights: CODE, 364 0 209
+_timerExpired: CODE, 716 0 82
+Total: 988

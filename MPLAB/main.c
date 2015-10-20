@@ -111,10 +111,46 @@ void taskForTest() {
 
 #endif
 
+#if 0
+static double temp(double r) {
+	// 5 multiplications and 5 sums to convert
+	return r * (r * (r * (r * (1.588560974e-14 * r - 1.077078151e-10) + 2.969300166e-7) - 4.399145663e-4) + 4.672892621e-1) - 207.5343491;
+}
+#endif
+
+#define	A5	1.588560974e-14
+#define	A4	1.077078151e-10
+#define	A3	2.969300166e-7
+#define	A2	4.399145663e-4
+#define	A1	4.672892621e-1
+#define	A0	207.5343491
+#define	MAX	2500.0
+
+#define	K	(((double)(2<<30)) / MAX)
+
+#define	K5	((long)(K/A5))
+
+#define	B5	((long)(A5*1e10*K))
+#define	B4	((long)(A4*1e10*K))
+
+static long temp(long r) {
+	return B5*r-A4;
+}
+
 void main(void) {
 
 	ConfigureOscillator();
 	ModIO2Init();
+
+#if 1
+	temp(10);
+	temp(11);
+#endif
+#if 0
+	double t = 1000.0;
+	t = temp(t);
+	systick = (int)t;
+#endif
 
 	while (1) {
 		sysCanReset = 1;
